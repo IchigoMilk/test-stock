@@ -17,7 +17,11 @@ class DummyFetcher:
 
 class DummyAnalyzer:
     def analyze(self, rows):
-        return [{**row, "substitutability_score": 50} for row in rows]
+        with_scores = []
+        for row in rows:
+            score = 90 if row["ticker"] == "C" else 50
+            with_scores.append({**row, "substitutability_score": score})
+        return sorted(with_scores, key=lambda r: r["substitutability_score"], reverse=True)
 
 
 class TestStockScreener(unittest.TestCase):
@@ -30,6 +34,7 @@ class TestStockScreener(unittest.TestCase):
 
         self.assertEqual(2, len(result))
         self.assertEqual({"A", "C"}, {r["ticker"] for r in result})
+        self.assertEqual(["C", "A"], [r["ticker"] for r in result])
 
 
 if __name__ == "__main__":
