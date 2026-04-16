@@ -3,7 +3,7 @@ import unittest
 from src.screener import StockScreener
 
 
-class DummyFetcher:
+class MockDataFetcher:
     def get_energy_tickers(self):
         return ["A", "B", "C", "D"]
 
@@ -16,7 +16,7 @@ class DummyFetcher:
         ]
 
 
-class DummyAnalyzer:
+class MockAnalyzer:
     def analyze(self, rows):
         with_scores = []
         for row in rows:
@@ -28,8 +28,8 @@ class DummyAnalyzer:
 class TestStockScreener(unittest.TestCase):
     def test_run_filters_and_sorts_by_score(self):
         screener = StockScreener({"screening": {"market_cap_min": 1e8, "market_cap_max": 2e10, "top_n": 10}})
-        screener.data_fetcher = DummyFetcher()
-        screener.analyzer = DummyAnalyzer()
+        screener.data_fetcher = MockDataFetcher()
+        screener.analyzer = MockAnalyzer()
 
         result = screener.run()
 
@@ -40,8 +40,8 @@ class TestStockScreener(unittest.TestCase):
 
     def test_run_applies_top_n_limit(self):
         screener = StockScreener({"screening": {"market_cap_min": 1e8, "market_cap_max": 2e10, "top_n": 2}})
-        screener.data_fetcher = DummyFetcher()
-        screener.analyzer = DummyAnalyzer()
+        screener.data_fetcher = MockDataFetcher()
+        screener.analyzer = MockAnalyzer()
 
         result = screener.run()
 

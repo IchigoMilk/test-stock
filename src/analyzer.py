@@ -105,7 +105,7 @@ class SubstitutabilityAnalyzer:
         else:
             cap_score = 100
 
-        growth_score = _clamp(50 + revenue_growth)  # 0%成長を中立(50)として評価
+        growth_score = _clamp(50 + revenue_growth)  # 成長率(%)をポイント加点して評価
         margin_score = _clamp(50 + (profit_margin * 2))  # 利益率は影響をやや強めるため2倍
         return (cap_score * 0.4) + (growth_score * 0.35) + (margin_score * 0.25)
 

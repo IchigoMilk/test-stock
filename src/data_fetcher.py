@@ -98,15 +98,15 @@ class DataFetcher:
         ).lower()
         revenue_growth_raw = info.get("revenueGrowth")
         profit_margin_raw = info.get("profitMargins")
+        revenue_growth = float(revenue_growth_raw if revenue_growth_raw is not None else 0.0) * 100
+        profit_margin = float(profit_margin_raw if profit_margin_raw is not None else 0.0) * 100
 
         return {
             "ticker": ticker,
             "company_name": info.get("longName", ticker),
             "market_cap": float(info.get("marketCap") or 0.0),
-            "revenue_growth": float(revenue_growth_raw if revenue_growth_raw is not None else 0.0)
-            * 100,
-            "profit_margin": float(profit_margin_raw if profit_margin_raw is not None else 0.0)
-            * 100,
+            "revenue_growth": revenue_growth,
+            "profit_margin": profit_margin,
             "momentum": float(momentum),
             "volatility": float(volatility),
             "theme": self._infer_theme(long_text),
