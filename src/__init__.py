@@ -1,0 +1,1 @@
+"""test-stock CLI package."""
