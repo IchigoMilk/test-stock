@@ -11,6 +11,14 @@ class TestDataFetcher(unittest.TestCase):
         fetcher = DataFetcher({"screening": {"tickers": ["plug", "be"]}})
         self.assertEqual(["BE", "PLUG"], fetcher.get_energy_tickers())
 
+    @patch("src.data_fetcher.yf.Sector")
+    def test_get_energy_tickers_fallback_default(self, mock_sector_cls):
+        mock_sector_cls.side_effect = RuntimeError("network error")
+        fetcher = DataFetcher({"screening": {"tickers": []}})
+        result = fetcher.get_energy_tickers()
+        self.assertGreater(len(result), 0)
+        self.assertIn("SMR", result)
+
     @patch("src.data_fetcher.yf.Ticker")
     def test_fetch_ticker_metrics(self, mock_ticker_cls):
         mock_ticker = mock_ticker_cls.return_value

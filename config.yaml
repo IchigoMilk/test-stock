@@ -9,6 +9,8 @@ data:
   price_period: 6mo
 
 scoring:
+  market_concentration_penalty_per_peer: 15
+  sector_diversity_penalty_per_peer: 20
   weights:
     market_concentration: 0.30
     financial: 0.30

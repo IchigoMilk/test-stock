@@ -27,6 +27,7 @@ pip install -r requirements.txt
 - `screening.tickers`: 銘柄リスト上書き（空なら Energy セクター取得を試行）
 - `screening.market_cap_min` / `market_cap_max`: 時価総額レンジ
 - `scoring.weights`: 各評価観点の重み
+- `scoring.market_concentration_penalty_per_peer` / `sector_diversity_penalty_per_peer`: 同テーマ銘柄数に対する減点幅
 - `report`: 既定出力設定
 - `schedule`: デイリー実行時刻と出力先
 

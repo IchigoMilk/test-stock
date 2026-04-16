@@ -29,7 +29,7 @@ THEME_KEYWORDS = {
     "ccs": ["carbon capture", "ccs", "sequestration"],
     "battery": ["battery", "storage", "lithium"],
 }
-TRADING_DAYS_PER_YEAR = 252
+US_TRADING_DAYS_PER_YEAR = 252
 
 
 @dataclass
@@ -90,7 +90,7 @@ class DataFetcher:
         returns = close.pct_change().dropna()
         momentum = ((close.iloc[-1] / close.iloc[0]) - 1.0) * 100 if len(close) > 1 else 0.0
         volatility = (
-            float(returns.std() * sqrt(TRADING_DAYS_PER_YEAR) * 100) if not returns.empty else 0.0
+            float(returns.std() * sqrt(US_TRADING_DAYS_PER_YEAR) * 100) if not returns.empty else 0.0
         )
 
         long_text = " ".join(

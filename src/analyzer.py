@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-MARKET_CONCENTRATION_PENALTY_PER_PEER = 15.0
-SECTOR_DIVERSITY_PENALTY_PER_PEER = 20.0
+DEFAULT_MARKET_CONCENTRATION_PENALTY_PER_PEER = 15.0
+DEFAULT_SECTOR_DIVERSITY_PENALTY_PER_PEER = 20.0
 
 
 def _clamp(value: float, low: float = 0.0, high: float = 100.0) -> float:
@@ -37,6 +37,18 @@ class SubstitutabilityAnalyzer:
 
         min_cap = float(self.config.get("screening", {}).get("market_cap_min", 1e8))
         max_cap = float(self.config.get("screening", {}).get("market_cap_max", 2e10))
+        market_penalty = float(
+            self.config.get("scoring", {}).get(
+                "market_concentration_penalty_per_peer",
+                DEFAULT_MARKET_CONCENTRATION_PENALTY_PER_PEER,
+            )
+        )
+        diversity_penalty = float(
+            self.config.get("scoring", {}).get(
+                "sector_diversity_penalty_per_peer",
+                DEFAULT_SECTOR_DIVERSITY_PENALTY_PER_PEER,
+            )
+        )
 
         theme_counts: dict[str, int] = {}
         for row in rows:
@@ -46,14 +58,10 @@ class SubstitutabilityAnalyzer:
         for row in rows:
             peers = float(theme_counts.get(row.get("theme", "other"), 1))
 
-            market_concentration_score = _clamp(
-                100 - ((peers - 1) * MARKET_CONCENTRATION_PENALTY_PER_PEER)
-            )
+            market_concentration_score = _clamp(100 - ((peers - 1) * market_penalty))
             financial_score = self._financial_score(row, min_cap=min_cap, max_cap=max_cap)
             momentum_score = self._momentum_score(row)
-            sector_diversity_score = _clamp(
-                100 - ((peers - 1) * SECTOR_DIVERSITY_PENALTY_PER_PEER)
-            )
+            sector_diversity_score = _clamp(100 - ((peers - 1) * diversity_penalty))
 
             score = (
                 market_concentration_score * w_market
