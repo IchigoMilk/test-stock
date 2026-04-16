@@ -1,0 +1,25 @@
+screening:
+  # 空の場合は yfinance の Energy セクター情報 + フォールバック銘柄を利用
+  tickers: []
+  market_cap_min: 100000000
+  market_cap_max: 20000000000
+  top_n: 20
+
+data:
+  price_period: 6mo
+
+scoring:
+  weights:
+    market_concentration: 0.30
+    financial: 0.30
+    momentum: 0.25
+    sector_diversity: 0.15
+
+report:
+  default_output: console
+  csv_path: screening_result.csv
+
+schedule:
+  daily_time: "07:00"
+  output: csv
+  csv_path: daily_screening_result.csv
