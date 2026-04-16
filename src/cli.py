@@ -42,7 +42,7 @@ def run_command(config_path: str, output: str | None, csv_path: str | None) -> N
     results = screener.run()
 
     report_cfg = config.get("report", {})
-    final_output = (output or report_cfg.get("default_output", "console")).lower()
+    final_output = str(output or report_cfg.get("default_output", "console")).lower()
     final_csv_path = csv_path or report_cfg.get("csv_path", "screening_result.csv")
 
     output_report(results, output=final_output, csv_path=final_csv_path)

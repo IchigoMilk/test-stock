@@ -7,6 +7,10 @@ from typing import Any
 
 DEFAULT_MARKET_CONCENTRATION_PENALTY_PER_PEER = 15.0
 DEFAULT_SECTOR_DIVERSITY_PENALTY_PER_PEER = 20.0
+DEFAULT_WEIGHT_MARKET = 0.30
+DEFAULT_WEIGHT_FINANCIAL = 0.30
+DEFAULT_WEIGHT_MOMENTUM = 0.25
+DEFAULT_WEIGHT_DIVERSITY = 0.15
 
 
 def _clamp(value: float, low: float = 0.0, high: float = 100.0) -> float:
@@ -25,14 +29,19 @@ class SubstitutabilityAnalyzer:
             return []
 
         weights = self.config.get("scoring", {}).get("weights", {})
-        w_market = float(weights.get("market_concentration", 0.30))
-        w_financial = float(weights.get("financial", 0.30))
-        w_momentum = float(weights.get("momentum", 0.25))
-        w_diversity = float(weights.get("sector_diversity", 0.15))
+        w_market = float(weights.get("market_concentration", DEFAULT_WEIGHT_MARKET))
+        w_financial = float(weights.get("financial", DEFAULT_WEIGHT_FINANCIAL))
+        w_momentum = float(weights.get("momentum", DEFAULT_WEIGHT_MOMENTUM))
+        w_diversity = float(weights.get("sector_diversity", DEFAULT_WEIGHT_DIVERSITY))
 
         total_w = w_market + w_financial + w_momentum + w_diversity
         if total_w <= 0:
-            w_market, w_financial, w_momentum, w_diversity = 0.30, 0.30, 0.25, 0.15
+            w_market, w_financial, w_momentum, w_diversity = (
+                DEFAULT_WEIGHT_MARKET,
+                DEFAULT_WEIGHT_FINANCIAL,
+                DEFAULT_WEIGHT_MOMENTUM,
+                DEFAULT_WEIGHT_DIVERSITY,
+            )
             total_w = 1.0
 
         min_cap = float(self.config.get("screening", {}).get("market_cap_min", 1e8))
@@ -96,8 +105,8 @@ class SubstitutabilityAnalyzer:
         else:
             cap_score = 100
 
-        growth_score = _clamp(50 + revenue_growth)
-        margin_score = _clamp(50 + (profit_margin * 2))
+        growth_score = _clamp(50 + revenue_growth)  # 0%成長を中立(50)として評価
+        margin_score = _clamp(50 + (profit_margin * 2))  # 利益率は影響をやや強めるため2倍
         return (cap_score * 0.4) + (growth_score * 0.35) + (margin_score * 0.25)
 
     @staticmethod

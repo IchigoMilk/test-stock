@@ -96,13 +96,17 @@ class DataFetcher:
         long_text = " ".join(
             str(info.get(k, "")) for k in ("longName", "longBusinessSummary", "industry")
         ).lower()
+        revenue_growth_raw = info.get("revenueGrowth")
+        profit_margin_raw = info.get("profitMargins")
 
         return {
             "ticker": ticker,
             "company_name": info.get("longName", ticker),
             "market_cap": float(info.get("marketCap") or 0.0),
-            "revenue_growth": float(info.get("revenueGrowth") or 0.0) * 100,
-            "profit_margin": float(info.get("profitMargins") or 0.0) * 100,
+            "revenue_growth": float(revenue_growth_raw if revenue_growth_raw is not None else 0.0)
+            * 100,
+            "profit_margin": float(profit_margin_raw if profit_margin_raw is not None else 0.0)
+            * 100,
             "momentum": float(momentum),
             "volatility": float(volatility),
             "theme": self._infer_theme(long_text),

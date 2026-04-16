@@ -26,7 +26,7 @@ class DummyAnalyzer:
 
 
 class TestStockScreener(unittest.TestCase):
-    def test_run_filters_by_market_cap(self):
+    def test_run_filters_and_sorts_by_score(self):
         screener = StockScreener({"screening": {"market_cap_min": 1e8, "market_cap_max": 2e10, "top_n": 10}})
         screener.data_fetcher = DummyFetcher()
         screener.analyzer = DummyAnalyzer()
@@ -36,6 +36,7 @@ class TestStockScreener(unittest.TestCase):
         self.assertEqual(3, len(result))
         self.assertEqual({"A", "C", "D"}, {r["ticker"] for r in result})
         self.assertEqual(["C", "D", "A"], [r["ticker"] for r in result])
+        self.assertEqual([90, 70, 50], [r["substitutability_score"] for r in result])
 
     def test_run_applies_top_n_limit(self):
         screener = StockScreener({"screening": {"market_cap_min": 1e8, "market_cap_max": 2e10, "top_n": 2}})
@@ -46,6 +47,7 @@ class TestStockScreener(unittest.TestCase):
 
         self.assertEqual(2, len(result))
         self.assertEqual(["C", "D"], [r["ticker"] for r in result])
+        self.assertEqual([90, 70], [r["substitutability_score"] for r in result])
 
 
 if __name__ == "__main__":
